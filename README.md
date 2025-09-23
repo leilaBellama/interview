@@ -10,10 +10,13 @@ This repo defines a FastAPI app with two constructs: a `User` and an `Organizati
 
 3. Rate your understanding and experience with `pytest` from a 1 to 10.
 
+4. You will notice as you go through this repository that there is not a lot of help for you to understand this code through comments or documentation. This is on purpose, as we want to see your ability to adapt to a totally new codebase. Please vocalize any questions you have and ask if you have any doubts.
+
 ## Interview
 
 1. Explain to me the schemas of a `User` and `Organization`.
 > Can you think of any advantages of this design?
+>
 > Can you think of any disadvantages of this design?
 
 2. Complete the task in `test_orgs.py`.
