@@ -1,6 +1,7 @@
 import pytest
-from typing import Any
 from httpx import AsyncClient
+
+from api.core.config import settings
 
 # @router.post(
 #     "",
@@ -18,20 +19,16 @@ from httpx import AsyncClient
 
 @pytest.mark.asyncio
 async def test_create_org(async_client: AsyncClient):
-    """Test creating a new patient case."""
+    """Test creating a new org."""
     # First create an organization
-    org_response = await async_client.post("/orgs/", json={"org_name": "test-org"})
+    org_response = await async_client.post(
+        "/orgs",
+        json={"org_name": "test-org"},
+        headers={"X-API-Key": settings.SECRET_KEY},
+    )
     assert org_response.status_code == 201
     org_data = org_response.json()
-
-    # Create the case
-    response = await async_client.post(
-        f"/orgs/{org_data['id']}/cases/", json=sample_case_payload
-    )
-    assert response.status_code == 201
-
-    data = response.json()
-    assert data["patient_name"] == sample_case_payload["patient_name"]
-    assert data["location"] == sample_case_payload["location"]
-    assert data["status"] == Status.PENDING.value
-    assert "id" in data
+    assert org_data["org_name"] == "test-org"
+    assert type(org_data["members"]) == list
+    assert len(org_data["members"]) == 0
+    assert "id" in org_data

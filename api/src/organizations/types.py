@@ -26,16 +26,11 @@ class Organization(Document):
 
     class Settings:
         name = "organizations"
-
-        # Indexes the embedded user_id, so that you can efficiently
-        # query which organizations a user belongs to
-        # Organization.find_all({"members.user_id": user_id})
         indexes = [IndexModel([("members.user_id", ASCENDING)])]
 
     class Create(BaseModel):
         org_name: Annotated[
             str,
-            # Must contain only letters, _, or - and length between 8 and 100 characters
             StringConstraints(
                 strip_whitespace=True,
                 min_length=5,
