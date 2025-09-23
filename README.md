@@ -10,7 +10,9 @@ This repo defines a FastAPI app with two constructs: a `User` and an `Organizati
 
 3. Rate your understanding and experience with `pytest` from a 1 to 10.
 
-4. You will notice as you go through this repository that there is not a lot of help for you to understand this code through comments or documentation. This is on purpose, as we want to see your ability to adapt to a totally new codebase. Please vocalize any questions you have and ask if you have any doubts.
+4. Rate your understanding and experience with `docker` from a 1 to 10.
+
+4. You will notice as you go through this repository that there is not a lot of help for you to understand this code through comments or documentation. This is on purpose, as we want to see your ability to adapt to a totally new codebase. Please vocalize any questions you have and ask clarify any assumptions you make.
 
 ## Interview
 
@@ -19,5 +21,9 @@ This repo defines a FastAPI app with two constructs: a `User` and an `Organizati
 >
 > Can you think of any disadvantages of this design?
 
-2. Complete the task in `test_orgs.py`.
-> Pay attention to `conftest.py` as this acts as a configuration file for `pytest`.
+2. Explain to me what the purpose of `conftest.py` is.
+> What is good about doing testing this way?
+>
+> What is bad about doing testing this way?
+
+3. Complete the task in `test_orgs.py`.
