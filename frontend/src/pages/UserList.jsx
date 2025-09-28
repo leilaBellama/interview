@@ -504,7 +504,10 @@ export default function UserList() {
         setUsers(data);
         setError(null);
       } catch (err) {
-        console.error("Error fetching users:", err);
+        if (process.env.NODE_ENV !== "test") {
+          console.error("Error fetching users:", err);
+        }
+        // console.error("Error fetching users:", err);
         setError(err.message);
       } finally {
         setLoading(false);
@@ -656,19 +659,15 @@ export default function UserList() {
         </div>
 
         {/* Users Grid - Fixed scroll container */}
-        <div 
-          ref={scrollContainerRef} 
+        <div
+          ref={scrollContainerRef}
           onScroll={handleScroll}
           className="flex-1 min-h-0 border rounded-lg overflow-auto overflow-x-hidden bg-blue-200"
         >
           {filteredAndSortedUsers.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-8">
               {filteredAndSortedUsers.map((user) => (
-                <UserCard
-                  key={user.id}
-                  user={user}
-                  onClick={handleUserClick}
-                />
+                <UserCard key={user.id} user={user} onClick={handleUserClick} />
               ))}
             </div>
           ) : (
