@@ -1,19 +1,471 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import SearchInput from "../components/SearchInput";
 import SortDropdown from "../components/SortDropdown";
 import UserCard from "../components/UserCard";
 import UserModal from "../components/UserModal";
 
-// FilterBar Layout Component
-function FilterBar({ children, className = "" }) {
-  return (
-    <div
-      className={`mb-8 flex flex-col sm:flex-row gap-4 items-center justify-between ${className}`}
-    >
-      {children}
-    </div>
-  );
-}
+const mockUsers = [
+  {
+    id: 1,
+    name: "Leanne Graham",
+    username: "Bret",
+    email: "Sincere@april.biz",
+    address: {
+      street: "Kulas Light",
+      suite: "Apt. 556",
+      city: "Gwenborough",
+      zipcode: "92998-3874",
+      geo: {
+        lat: "-37.3159",
+        lng: "81.1496",
+      },
+    },
+    phone: "1-770-736-8031 x56442",
+    website: "hildegard.org",
+    company: {
+      name: "Romaguera-Crona",
+      catchPhrase: "Multi-layered client-server neural-net",
+      bs: "harness real-time e-markets",
+    },
+  },
+  {
+    id: 2,
+    name: "Ervin Howell",
+    username: "Antonette",
+    email: "Shanna@melissa.tv",
+    address: {
+      street: "Victor Plains",
+      suite: "Suite 879",
+      city: "Wisokyburgh",
+      zipcode: "90566-7771",
+      geo: {
+        lat: "-43.9509",
+        lng: "-34.4618",
+      },
+    },
+    phone: "010-692-6593 x09125",
+    website: "anastasia.net",
+    company: {
+      name: "Deckow-Crist",
+      catchPhrase: "Proactive didactic contingency",
+      bs: "synergize scalable supply-chains",
+    },
+  },
+  {
+    id: 3,
+    name: "Clementine Bauch",
+    username: "Samantha",
+    email: "Nathan@yesenia.net",
+    address: {
+      street: "Douglas Extension",
+      suite: "Suite 847",
+      city: "McKenziehaven",
+      zipcode: "59590-4157",
+      geo: {
+        lat: "-68.6102",
+        lng: "-47.0653",
+      },
+    },
+    phone: "1-463-123-4447",
+    website: "ramiro.info",
+    company: {
+      name: "Romaguera-Jacobson",
+      catchPhrase: "Face to face bifurcated interface",
+      bs: "e-enable strategic applications",
+    },
+  },
+  {
+    id: 4,
+    name: "Patricia Lebsack",
+    username: "Karianne",
+    email: "Julianne.OConner@kory.org",
+    address: {
+      street: "Hoeger Mall",
+      suite: "Apt. 692",
+      city: "South Elvis",
+      zipcode: "53919-4257",
+      geo: {
+        lat: "29.4572",
+        lng: "-164.2990",
+      },
+    },
+    phone: "493-170-9623 x156",
+    website: "kale.biz",
+    company: {
+      name: "Robel-Corkery",
+      catchPhrase: "Multi-tiered zero tolerance productivity",
+      bs: "transition cutting-edge web services",
+    },
+  },
+  {
+    id: 5,
+    name: "Chelsey Dietrich",
+    username: "Kamren",
+    email: "Lucio_Hettinger@annie.ca",
+    address: {
+      street: "Skiles Walks",
+      suite: "Suite 351",
+      city: "Roscoeview",
+      zipcode: "33263",
+      geo: {
+        lat: "-31.8129",
+        lng: "62.5342",
+      },
+    },
+    phone: "(254)954-1289",
+    website: "demarco.info",
+    company: {
+      name: "Keebler LLC",
+      catchPhrase: "User-centric fault-tolerant solution",
+      bs: "revolutionize end-to-end systems",
+    },
+  },
+  {
+    id: 6,
+    name: "Mrs. Dennis Schulist",
+    username: "Leopoldo_Corkery",
+    email: "Karley_Dach@jasper.info",
+    address: {
+      street: "Norberto Crossing",
+      suite: "Apt. 950",
+      city: "South Christy",
+      zipcode: "23505-1337",
+      geo: {
+        lat: "-71.4197",
+        lng: "71.7478",
+      },
+    },
+    phone: "1-477-935-8478 x6430",
+    website: "ola.org",
+    company: {
+      name: "Considine-Lockman",
+      catchPhrase: "Synchronised bottom-line interface",
+      bs: "e-enable innovative applications",
+    },
+  },
+  {
+    id: 7,
+    name: "Kurtis Weissnat",
+    username: "Elwyn.Skiles",
+    email: "Telly.Hoeger@billy.biz",
+    address: {
+      street: "Rex Trail",
+      suite: "Suite 280",
+      city: "Howemouth",
+      zipcode: "58804-1099",
+      geo: {
+        lat: "24.8918",
+        lng: "21.8984",
+      },
+    },
+    phone: "210.067.6132",
+    website: "elvis.io",
+    company: {
+      name: "Johns Group",
+      catchPhrase: "Configurable multimedia task-force",
+      bs: "generate enterprise e-tailers",
+    },
+  },
+  {
+    id: 8,
+    name: "Nicholas Runolfsdottir V",
+    username: "Maxime_Nienow",
+    email: "Sherwood@rosamond.me",
+    address: {
+      street: "Ellsworth Summit",
+      suite: "Suite 729",
+      city: "Aliyaview",
+      zipcode: "45169",
+      geo: {
+        lat: "-14.3990",
+        lng: "-120.7677",
+      },
+    },
+    phone: "586.493.6943 x140",
+    website: "jacynthe.com",
+    company: {
+      name: "Abernathy Group",
+      catchPhrase: "Implemented secondary concept",
+      bs: "e-enable extensible e-tailers",
+    },
+  },
+  {
+    id: 9,
+    name: "Glenna Reichert",
+    username: "Delphine",
+    email: "Chaim_McDermott@dana.io",
+    address: {
+      street: "Dayna Park",
+      suite: "Suite 449",
+      city: "Bartholomebury",
+      zipcode: "76495-3109",
+      geo: {
+        lat: "24.6463",
+        lng: "-168.8889",
+      },
+    },
+    phone: "(775)976-6794 x41206",
+    website: "conrad.com",
+    company: {
+      name: "Yost and Sons",
+      catchPhrase: "Switchable contextually-based project",
+      bs: "aggregate real-time technologies",
+    },
+  },
+  {
+    id: 10,
+    name: "Clementina DuBuque",
+    username: "Moriah.Stanton",
+    email: "Rey.Padberg@karina.biz",
+    address: {
+      street: "Kattie Turnpike",
+      suite: "Suite 198",
+      city: "Lebsackbury",
+      zipcode: "31428-2261",
+      geo: {
+        lat: "-38.2386",
+        lng: "57.2232",
+      },
+    },
+    phone: "024-648-3804",
+    website: "ambrose.net",
+    company: {
+      name: "Hoeger LLC",
+      catchPhrase: "Centralized empowering task-force",
+      bs: "target end-to-end models",
+    },
+  },
+  {
+    id: 11,
+    name: "Leanne Graham1",
+    username: "Bret",
+    email: "Sincere@april.biz",
+    address: {
+      street: "Kulas Light",
+      suite: "Apt. 556",
+      city: "Gwenborough",
+      zipcode: "92998-3874",
+      geo: {
+        lat: "-37.3159",
+        lng: "81.1496",
+      },
+    },
+    phone: "1-770-736-8031 x56442",
+    website: "hildegard.org",
+    company: {
+      name: "Romaguera-Crona",
+      catchPhrase: "Multi-layered client-server neural-net",
+      bs: "harness real-time e-markets",
+    },
+  },
+  {
+    id: 21,
+    name: "Ervin Howell1",
+    username: "Antonette",
+    email: "Shanna@melissa.tv",
+    address: {
+      street: "Victor Plains",
+      suite: "Suite 879",
+      city: "Wisokyburgh",
+      zipcode: "90566-7771",
+      geo: {
+        lat: "-43.9509",
+        lng: "-34.4618",
+      },
+    },
+    phone: "010-692-6593 x09125",
+    website: "anastasia.net",
+    company: {
+      name: "Deckow-Crist",
+      catchPhrase: "Proactive didactic contingency",
+      bs: "synergize scalable supply-chains",
+    },
+  },
+  {
+    id: 31,
+    name: "Clementine Bauch1",
+    username: "Samantha",
+    email: "Nathan@yesenia.net",
+    address: {
+      street: "Douglas Extension",
+      suite: "Suite 847",
+      city: "McKenziehaven",
+      zipcode: "59590-4157",
+      geo: {
+        lat: "-68.6102",
+        lng: "-47.0653",
+      },
+    },
+    phone: "1-463-123-4447",
+    website: "ramiro.info",
+    company: {
+      name: "Romaguera-Jacobson",
+      catchPhrase: "Face to face bifurcated interface",
+      bs: "e-enable strategic applications",
+    },
+  },
+  {
+    id: 41,
+    name: "Patricia Lebsack1",
+    username: "Karianne",
+    email: "Julianne.OConner@kory.org",
+    address: {
+      street: "Hoeger Mall",
+      suite: "Apt. 692",
+      city: "South Elvis",
+      zipcode: "53919-4257",
+      geo: {
+        lat: "29.4572",
+        lng: "-164.2990",
+      },
+    },
+    phone: "493-170-9623 x156",
+    website: "kale.biz",
+    company: {
+      name: "Robel-Corkery",
+      catchPhrase: "Multi-tiered zero tolerance productivity",
+      bs: "transition cutting-edge web services",
+    },
+  },
+  {
+    id: 51,
+    name: "Chelsey Dietrich1",
+    username: "Kamren",
+    email: "Lucio_Hettinger@annie.ca",
+    address: {
+      street: "Skiles Walks",
+      suite: "Suite 351",
+      city: "Roscoeview",
+      zipcode: "33263",
+      geo: {
+        lat: "-31.8129",
+        lng: "62.5342",
+      },
+    },
+    phone: "(254)954-1289",
+    website: "demarco.info",
+    company: {
+      name: "Keebler LLC",
+      catchPhrase: "User-centric fault-tolerant solution",
+      bs: "revolutionize end-to-end systems",
+    },
+  },
+  {
+    id: 61,
+    name: "Mrs. Dennis Schulist1",
+    username: "Leopoldo_Corkery",
+    email: "Karley_Dach@jasper.info",
+    address: {
+      street: "Norberto Crossing",
+      suite: "Apt. 950",
+      city: "South Christy",
+      zipcode: "23505-1337",
+      geo: {
+        lat: "-71.4197",
+        lng: "71.7478",
+      },
+    },
+    phone: "1-477-935-8478 x6430",
+    website: "ola.org",
+    company: {
+      name: "Considine-Lockman",
+      catchPhrase: "Synchronised bottom-line interface",
+      bs: "e-enable innovative applications",
+    },
+  },
+  {
+    id: 71,
+    name: "Kurtis Weissnat1",
+    username: "Elwyn.Skiles",
+    email: "Telly.Hoeger@billy.biz",
+    address: {
+      street: "Rex Trail",
+      suite: "Suite 280",
+      city: "Howemouth",
+      zipcode: "58804-1099",
+      geo: {
+        lat: "24.8918",
+        lng: "21.8984",
+      },
+    },
+    phone: "210.067.6132",
+    website: "elvis.io",
+    company: {
+      name: "Johns Group",
+      catchPhrase: "Configurable multimedia task-force",
+      bs: "generate enterprise e-tailers",
+    },
+  },
+  {
+    id: 81,
+    name: "Nicholas Runolfsdottir V1",
+    username: "Maxime_Nienow",
+    email: "Sherwood@rosamond.me",
+    address: {
+      street: "Ellsworth Summit",
+      suite: "Suite 729",
+      city: "Aliyaview",
+      zipcode: "45169",
+      geo: {
+        lat: "-14.3990",
+        lng: "-120.7677",
+      },
+    },
+    phone: "586.493.6943 x140",
+    website: "jacynthe.com",
+    company: {
+      name: "Abernathy Group",
+      catchPhrase: "Implemented secondary concept",
+      bs: "e-enable extensible e-tailers",
+    },
+  },
+  {
+    id: 91,
+    name: "Glenna Reichert1",
+    username: "Delphine",
+    email: "Chaim_McDermott@dana.io",
+    address: {
+      street: "Dayna Park",
+      suite: "Suite 449",
+      city: "Bartholomebury",
+      zipcode: "76495-3109",
+      geo: {
+        lat: "24.6463",
+        lng: "-168.8889",
+      },
+    },
+    phone: "(775)976-6794 x41206",
+    website: "conrad.com",
+    company: {
+      name: "Yost and Sons",
+      catchPhrase: "Switchable contextually-based project",
+      bs: "aggregate real-time technologies",
+    },
+  },
+  {
+    id: 101,
+    name: "Clementina DuBuquehudheudhu1",
+    username: "Moriah.Stanton",
+    email: "Rey.Padberg@karina.biz",
+    address: {
+      street: "Kattie Turnpike",
+      suite: "Suite 198",
+      city: "Lebsackburyhuhuheduheudh",
+      zipcode: "31428-2261",
+      geo: {
+        lat: "-38.2386",
+        lng: "57.2232",
+      },
+    },
+    phone: "024-648-3804",
+    website: "ambrose.net",
+    company: {
+      name: "Hoeger LLC",
+      catchPhrase: "Centralized empowering task-force",
+      bs: "target end-to-end models",
+    },
+  },
+];
 
 // Main App Component
 export default function UserList() {
@@ -24,6 +476,9 @@ export default function UserList() {
   const [sortOrder, setSortOrder] = useState("asc");
   const [selectedUser, setSelectedUser] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showBackToTop, setShowBackToTop] = useState(false);
+  const scrollContainerRef = useRef(null);
+  const scrollTimeoutRef = useRef(null);
 
   // Sort options configuration
   const sortOptions = [
@@ -45,6 +500,7 @@ export default function UserList() {
         }
 
         const data = await response.json();
+        // setUsers(mockUsers);
         setUsers(data);
         setError(null);
       } catch (err) {
@@ -59,13 +515,24 @@ export default function UserList() {
   }, []);
 
   // Filter and sort users
-  const filteredAndSortedUsers = users.filter((user) => {
-    const searchLower = searchTerm.toLowerCase(); // "le" → "le"
-    const nameParts = user.name.toLowerCase().split(" "); // "Leanne Graham" → ["leanne", "graham"]
+  const filteredAndSortedUsers = users
+    .filter((user) => {
+      const searchLower = searchTerm.toLowerCase();
+      const nameParts = user.name.toLowerCase().split(" ");
 
-    // Check if any part of the name starts with search term
-    return nameParts.some((namePart) => namePart.startsWith(searchLower));
-  });
+      // Check if any part of the name starts with search term
+      return nameParts.some((namePart) => namePart.startsWith(searchLower));
+    })
+    .sort((a, b) => {
+      const nameA = a.name.toLowerCase();
+      const nameB = b.name.toLowerCase();
+
+      if (sortOrder === "asc") {
+        return nameA.localeCompare(nameB);
+      } else {
+        return nameB.localeCompare(nameA);
+      }
+    });
 
   // Handle user card click
   const handleUserClick = (user) => {
@@ -76,6 +543,32 @@ export default function UserList() {
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setSelectedUser(null);
+  };
+
+  // Handle scroll for back to top button
+  const handleScroll = () => {
+    if (scrollTimeoutRef.current) {
+      clearTimeout(scrollTimeoutRef.current);
+    }
+
+    scrollTimeoutRef.current = setTimeout(() => {
+      if (scrollContainerRef.current) {
+        const scrollTop = scrollContainerRef.current.scrollTop;
+        console.log("Scroll position:", scrollTop); // Debug log
+        // Show button when scrolled more than 100px
+        setShowBackToTop(scrollTop > 100);
+      }
+    }, 10); // Very short delay to batch scroll events
+  };
+
+  // Scroll to top function
+  const scrollToTop = () => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    }
   };
 
   // Loading state
@@ -93,9 +586,9 @@ export default function UserList() {
   // Error state
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center text-center">
         <div className="bg-red-50 border border-red-200 rounded-lg p-6 max-w-md mx-4">
-          <div className="flex items-center mb-4">
+          <div className="flex items-center mb-4 justify-center">
             <svg
               className="h-8 w-8 text-red-600 mr-3"
               fill="none"
@@ -126,10 +619,10 @@ export default function UserList() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+    <div className="h-screen overflow-hidden flex flex-col">
+      <div className=" mx-auto p-4 sm:p-6 lg:p-14 overflow-hidden flex-1 flex flex-col min-h-0 w-full">
         {/* Header */}
-        <div className="mb-8 text-center">
+        <div className="mb-4 text-center flex-shrink-0">
           <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-2">
             User Directory
           </h1>
@@ -139,52 +632,91 @@ export default function UserList() {
         </div>
 
         {/* Search and Sort */}
-        <FilterBar>
-          <div className="flex items-center gap-2 w-full sm:w-auto">
+        <div className="flex flex-col mb-4">
+          <div className="mb-2 sm:w-[33vw]">
             <SearchInput
               searchTerm={searchTerm}
               onSearchChange={setSearchTerm}
               placeholder="Search users by name..."
             />
-            {searchTerm && (
-              <button
-                onClick={() => setSearchTerm("")}
-                className="text-gray-400 hover:text-gray-600 px-2 transition-colors duration-200"
-                title="Clear search"
-              >
-                ✕
-              </button>
-            )}
           </div>
-          <SortDropdown
-            sortOrder={sortOrder}
-            onSortChange={setSortOrder}
-            options={sortOptions}
-            label="Sort by:"
-          />
-        </FilterBar>
 
-        {/* Results Info */}
-        <div className="mb-6">
-          <p className="text-sm text-gray-600">
-            Showing {filteredAndSortedUsers.length} of {users.length} users
-            {searchTerm && <span> matching "{searchTerm}"</span>}
-          </p>
+          {/* Results Info */}
+          <div className=" flex justify-between items-end flex-shrink-0">
+            <p className="text-sm text-gray-600 whitespace-nowrap truncate mt-4">
+              Showing {filteredAndSortedUsers.length} of {users.length} users
+              {searchTerm && <span> matching "{searchTerm}"</span>}
+            </p>
+            <SortDropdown
+              sortOrder={sortOrder}
+              onSortChange={setSortOrder}
+              options={sortOptions}
+            />
+          </div>
         </div>
 
-        {/* Users Grid */}
-        <div className="max-h-[60vh] overflow-auto">
+        {/* Users Grid - Fixed scroll container */}
+        <div 
+          ref={scrollContainerRef} 
+          onScroll={handleScroll}
+          className="flex-1 min-h-0 border rounded-lg overflow-auto overflow-x-hidden bg-blue-200"
+        >
+          {filteredAndSortedUsers.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-8">
+              {filteredAndSortedUsers.map((user) => (
+                <UserCard
+                  key={user.id}
+                  user={user}
+                  onClick={handleUserClick}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="flex items-center justify-center min-h-full p-8">
+              <div className="text-center max-w-md">
+                <svg
+                  className="mx-auto h-12 w-12 text-gray-400 mb-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2-2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"
+                  />
+                </svg>
+                <h3 className="text-lg font-medium text-gray-900 mb-2">
+                  No users found
+                </h3>
+                <p className="text-gray-600">
+                  {searchTerm
+                    ? `No users match "${searchTerm}". Try a different search term.`
+                    : "No users available at the moment."}
+                </p>
+                {searchTerm && (
+                  <button
+                    onClick={() => setSearchTerm("")}
+                    className="mt-4 text-blue-600 hover:text-blue-700 font-medium"
+                  >
+                    Clear search
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
 
-        {filteredAndSortedUsers.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {filteredAndSortedUsers.map((user) => (
-              <UserCard key={user.id} user={user} onClick={handleUserClick} />
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-12">
+        {/* Back to Top Button - Shows on all screen sizes when scrolled */}
+        {showBackToTop && (
+          <button
+            onClick={scrollToTop}
+            className="fixed bottom-4 right-4 bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-full shadow-lg transition-all duration-300 z-50"
+            aria-label="Back to top"
+          >
             <svg
-              className="mx-auto h-12 w-12 text-gray-400 mb-4"
+              className="w-5 h-5"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -193,29 +725,11 @@ export default function UserList() {
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 strokeWidth={2}
-                d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"
+                d="M5 10l7-7m0 0l7 7m-7-7v18"
               />
             </svg>
-            <h3 className="text-lg font-medium text-gray-900 mb-2">
-              No users found
-            </h3>
-            <p className="text-gray-600">
-              {searchTerm
-                ? `No users match "${searchTerm}". Try a different search term.`
-                : "No users available at the moment."}
-            </p>
-            {searchTerm && (
-              <button
-                onClick={() => setSearchTerm("")}
-                className="mt-4 text-blue-600 hover:text-blue-700 font-medium"
-              >
-                Clear search
-              </button>
-            )}
-          </div>
+          </button>
         )}
-        </div>
-
 
         {/* User Details Modal */}
         <UserModal
