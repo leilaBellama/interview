@@ -22,11 +22,16 @@ export default function UserCard({ user, onClick }) {
             {/* Location */}
             <div className="flex justify-start items-center flex-shrink-0 my-3 w-fit mx-auto">
               <PinpointIcon className="text-gray-500" />
-              <div className="text-sm text-gray-600 text-center">
+              <div className=" text-gray-600 text-center">
                 {user.address?.city}
               </div>
             </div>
           </div>
+        </div>
+        <div className="">
+          <span className="inline-block text-blue-800 text-xs rounded">
+            Click for details
+          </span>
         </div>
       </div>
     </div>
