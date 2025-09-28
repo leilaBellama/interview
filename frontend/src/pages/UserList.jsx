@@ -3,6 +3,7 @@ import SearchInput from "../components/SearchInput";
 import SortDropdown from "../components/SortDropdown";
 import UserCard from "../components/UserCard";
 import UserModal from "../components/UserModal";
+import { ErrorIcon, UpArrow } from "../assets/icons.jsx";
 
 const mockUsers = [
   {
@@ -520,11 +521,8 @@ export default function UserList() {
   // Filter and sort users
   const filteredAndSortedUsers = users
     .filter((user) => {
-      const searchLower = searchTerm.toLowerCase();
-      const nameParts = user.name.toLowerCase().split(" ");
-
-      // Check if any part of the name starts with search term
-      return nameParts.some((namePart) => namePart.startsWith(searchLower));
+      // Regular case-sensitive filter - checks if name contains search term
+      return user.name.includes(searchTerm);
     })
     .sort((a, b) => {
       const nameA = a.name.toLowerCase();
@@ -557,7 +555,7 @@ export default function UserList() {
     scrollTimeoutRef.current = setTimeout(() => {
       if (scrollContainerRef.current) {
         const scrollTop = scrollContainerRef.current.scrollTop;
-        console.log("Scroll position:", scrollTop); // Debug log
+        // console.log("Scroll position:", scrollTop); // Debug log
         // Show button when scrolled more than 100px
         setShowBackToTop(scrollTop > 100);
       }
@@ -592,19 +590,7 @@ export default function UserList() {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center text-center">
         <div className="bg-red-50 border border-red-200 rounded-lg p-6 max-w-md mx-4">
           <div className="flex items-center mb-4 justify-center">
-            <svg
-              className="h-8 w-8 text-red-600 mr-3"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
-              />
-            </svg>
+            <ErrorIcon className="h-8 w-8 text-red-600 mr-3" />
             <h3 className="text-lg font-semibold text-red-800">
               Error Loading Users
             </h3>
@@ -673,19 +659,6 @@ export default function UserList() {
           ) : (
             <div className="flex items-center justify-center min-h-full p-8">
               <div className="text-center max-w-md">
-                <svg
-                  className="mx-auto h-12 w-12 text-gray-400 mb-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2-2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"
-                  />
-                </svg>
                 <h3 className="text-lg font-medium text-gray-900 mb-2">
                   No users found
                 </h3>
@@ -714,19 +687,7 @@ export default function UserList() {
             className="fixed bottom-4 right-4 bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-full shadow-lg transition-all duration-300 z-50"
             aria-label="Back to top"
           >
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M5 10l7-7m0 0l7 7m-7-7v18"
-              />
-            </svg>
+            <UpArrow className="w-5 h-5 " />
           </button>
         )}
 

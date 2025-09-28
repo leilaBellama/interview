@@ -177,7 +177,7 @@ describe('UserList Component', () => {
 
       // Search for "john"
       const searchInput = screen.getByTestId('search-input');
-      fireEvent.change(searchInput, { target: { value: 'john' } });
+      fireEvent.change(searchInput, { target: { value: 'John' } });
 
       await waitFor(() => {
         expect(screen.getByTestId('user-card-1')).toBeInTheDocument();
