@@ -13,7 +13,7 @@ export default function SearchInput({
           placeholder={placeholder}
           value={searchTerm}
           onChange={(e) => onSearchChange(e.target.value)}
-          className="py-2 px-3 pl-10 pr-8 border rounded-lg focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+          className="py-2 px-3 pl-10 pr-8 input-box w-full"
         />
 
         {/* Search icon - left side */}

@@ -1,5 +1,4 @@
 import {
-  PinpointIcon,
   MailIcon,
   PhoneIcon,
   WebsiteIcon,

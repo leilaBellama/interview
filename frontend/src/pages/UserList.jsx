@@ -502,8 +502,8 @@ export default function UserList() {
         }
 
         const data = await response.json();
-        setUsers(mockUsers);
-        // setUsers(data);
+        // setUsers(mockUsers);
+        setUsers(data);
         setError(null);
       } catch (err) {
         if (process.env.NODE_ENV !== "test") {
@@ -649,10 +649,10 @@ export default function UserList() {
         <div
           ref={scrollContainerRef}
           onScroll={handleScroll}
-          className="flex-1 min-h-0 border-2 rounded-xl --14 overflow-auto overflow-x-hidden bg-blue-200"
+          className="flex-1 min-h-0 border-2 rounded-xl overflow-auto scrollbar-thumb-only overflow-x-hidden bg-blue-100 outline-none"
         >
           {filteredAndSortedUsers.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 p-8 overflow-y-au">
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 p-4 xl:gap-6 xl:p-6">
               {filteredAndSortedUsers.map((user) => (
                 <UserCard key={user.id} user={user} onClick={handleUserClick} />
               ))}
