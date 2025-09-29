@@ -2,23 +2,31 @@ import { SortIcon } from "../assets/icons.jsx";
 
 export default function SortDropdown({ sortOrder, onSortChange, options, label }) {
   const handleToggle = () => {
-    if (options.length === 2) {
-      // Find the other option
-      const newValue =
-        sortOrder === options[0].value ? options[1].value : options[0].value;
+    // Find current option index
+    const currentIndex = options.findIndex((opt) => opt.value === sortOrder);
+
+    if (currentIndex !== -1) {
+      // Find the "paired" option: e.g. asc <-> desc
+      // If current is even, toggle to next; if odd, toggle to previous
+      const isEven = currentIndex % 2 === 0;
+      const pairedIndex = isEven ? currentIndex + 1 : currentIndex - 1;
+
+      const newValue = options[pairedIndex]?.value || sortOrder;
       onSortChange(newValue);
     }
   };
 
   return (
     <div className="flex items-center gap-2">
-      {/* Sort icon */}
-      <SortIcon className="w-6 h-6 text-gray-600" />
+      {/* Sort icon as toggle */}
+      <button onClick={handleToggle}>
+        <SortIcon className="w-6 h-6 text-black" />
+      </button>
 
       {/* Label */}
       {label && <span className="text-sm font-medium">{label}</span>}
 
-      {/* If only 2 options → button toggle */}
+      {/* Dropdown (or toggle button if only 2 options) */}
       {options.length === 2 ? (
         <button
           onClick={handleToggle}
@@ -27,11 +35,10 @@ export default function SortDropdown({ sortOrder, onSortChange, options, label }
           {options.find((opt) => opt.value === sortOrder)?.label}
         </button>
       ) : (
-        /* Otherwise → dropdown */
         <select
           value={sortOrder}
           onChange={(e) => onSortChange(e.target.value)}
-          className="input-box px-2 py-1 text-sm"
+          className="input-box px-2 py-1 text-sm cursor-pointer"
         >
           {options.map((option) => (
             <option key={option.value} value={option.value}>

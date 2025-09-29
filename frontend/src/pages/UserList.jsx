@@ -422,7 +422,7 @@ const mockUsers = [
   },
   {
     id: 91,
-    name: "AGlenna Reichert1",
+    name: "glenna Reichert1",
     username: "Delphine",
     email: "Chaim_McDermott111111111111111111@dana.io",
     address: {
@@ -448,7 +448,8 @@ const mockUsers = [
     name: "Areallylongfirstnameeeeeeeeeeeeeeeeee1 Areallylonglasttnameeeeeeeeeeeeeeee1",
     username: "Areallylongusernameeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee1",
     // email: "Areallylongemaill@.biz1",
-    email: "Areallylongemailllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll@.biz1",
+    email:
+      "Areallylongemailllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll@.biz1",
     address: {
       street: "Kattie Turnpike",
       suite: "Suite 198",
@@ -463,7 +464,8 @@ const mockUsers = [
     website: "ambrose.net",
     company: {
       name: "Hoeger LLC",
-      catchPhrase: "Centralized empowering task-force apple, bicycle, river, galaxy, lamp, thunder, orange, melody, pillow, cactus, window, notebook, shadow, sunflower, ocean, rocket, pebble, violin, lantern, comet, mirror, castle",
+      catchPhrase:
+        "Centralized empowering task-force apple, bicycle, river, galaxy, lamp, thunder, orange, melody, pillow, cactus, window, notebook, shadow, sunflower, ocean, rocket, pebble, violin, lantern, comet, mirror, castle",
       bs: "target end-to-end models apple, bicycle, river, galaxy, lamp, thunder, orange, melody, pillow, cactus, window, notebook, shadow, sunflower, ocean, rocket, pebble, violin, lantern, comet, mirror, castle",
     },
   },
@@ -475,10 +477,12 @@ export default function UserList() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [caseSensitive, setCaseSensitive] = useState(true);
   const [sortOrder, setSortOrder] = useState("asc");
   const [selectedUser, setSelectedUser] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showBackToTop, setShowBackToTop] = useState(false);
+  const [searchBy, setSearchBy] = useState("name");
   const scrollContainerRef = useRef(null);
   const scrollTimeoutRef = useRef(null);
 
@@ -486,6 +490,17 @@ export default function UserList() {
   const sortOptions = [
     { value: "asc", label: "Name (A-Z)" },
     { value: "desc", label: "Name (Z-A)" },
+    { value: "ascCity", label: "City (A-Z)" },
+    { value: "descCity", label: "City (Z-A)" },
+    { value: "ascEmail", label: "Email (A-Z)" },
+    { value: "descEmail", label: "Email (Z-A)" },
+  ];
+
+  const searchOptions = [
+    { value: "name", label: "Name" },
+    { value: "city", label: "City" },
+    { value: "email", label: "Email" },
+    { value: "all", label: "All" },
   ];
 
   // Fetch users on component mount
@@ -502,8 +517,8 @@ export default function UserList() {
         }
 
         const data = await response.json();
-        // setUsers(mockUsers);
-        setUsers(data);
+        setUsers(mockUsers);
+        // setUsers(data);
         setError(null);
       } catch (err) {
         if (process.env.NODE_ENV !== "test") {
@@ -521,20 +536,77 @@ export default function UserList() {
 
   // Filter and sort users
   const filteredAndSortedUsers = users
-    .filter((user) => {
-      // Regular case-sensitive filter - checks if name contains search term
-      return user.name.includes(searchTerm);
-    })
-    .sort((a, b) => {
-      const nameA = a.name.toLowerCase();
-      const nameB = b.name.toLowerCase();
+  .filter((user) => {
+    let textToSearch = "";
 
-      if (sortOrder === "asc") {
-        return nameA.localeCompare(nameB);
-      } else {
-        return nameB.localeCompare(nameA);
-      }
-    });
+    if (searchBy === "all") {
+      // Flatten values
+      textToSearch = [
+        user.name,
+        user.username,
+        user.email,
+        user.phone,
+        user.website,
+        user.address?.city,
+        user.company?.name,
+      ]
+        .filter(Boolean)
+        .join(" ");
+    } else if (searchBy === "city") {
+      textToSearch = user.address?.city || "";
+      console.log("city →", textToSearch);
+    } else {
+      textToSearch = user[searchBy] || "";
+      console.log(`${searchBy} →`, textToSearch);
+    }
+
+    // Normalize for case sensitivity
+    const itemText = caseSensitive
+      ? textToSearch
+      : textToSearch.toLowerCase();
+    const search = caseSensitive ? searchTerm : searchTerm.toLowerCase();
+
+    return itemText.includes(search);
+  })
+  .sort((a, b) => {
+    let valA, valB;
+
+    switch (sortOrder) {
+      case "asc":
+        valA = a.name?.toLowerCase() || "";
+        valB = b.name?.toLowerCase() || "";
+        return valA.localeCompare(valB);
+
+      case "desc":
+        valA = a.name?.toLowerCase() || "";
+        valB = b.name?.toLowerCase() || "";
+        return valB.localeCompare(valA);
+
+      case "ascCity":
+        valA = a.address?.city?.toLowerCase() || "";
+        valB = b.address?.city?.toLowerCase() || "";
+        return valA.localeCompare(valB);
+
+      case "descCity":
+        valA = a.address?.city?.toLowerCase() || "";
+        valB = b.address?.city?.toLowerCase() || "";
+        return valB.localeCompare(valA);
+
+      case "ascEmail":
+        valA = a.email?.toLowerCase() || "";
+        valB = b.email?.toLowerCase() || "";
+        return valA.localeCompare(valB);
+
+      case "descEmail":
+        valA = a.email?.toLowerCase() || "";
+        valB = b.email?.toLowerCase() || "";
+        return valB.localeCompare(valA);
+
+      default:
+        return 0;
+    }
+  });
+
 
   // Handle user card click
   const handleUserClick = (user) => {
@@ -623,13 +695,23 @@ export default function UserList() {
 
         {/* Search and Sort */}
         <div className="flex flex-col mb-4">
-          <div className="mb-2 sm:w-[33vw]">
+          <div className="mb-4 sm:w-[33vw]">
             <SearchInput
               searchTerm={searchTerm}
               onSearchChange={setSearchTerm}
-              placeholder="Search users by name..."
+              caseSensitive={caseSensitive}
+              onCaseSensitiveChange={setCaseSensitive}
+              searchBy={searchBy}
+              onSearchByChange={setSearchBy}
+              searchOptions={searchOptions}
+              placeholder={
+                searchBy === "all"
+                  ? "Search users"
+                  : `Search users by ${searchBy}`
+              }
             />
           </div>
+
 
           {/* Results Info */}
           <div className=" flex justify-between items-end flex-shrink-0">
@@ -649,7 +731,7 @@ export default function UserList() {
         <div
           ref={scrollContainerRef}
           onScroll={handleScroll}
-          className="flex-1 min-h-0 border-2 rounded-xl overflow-auto scrollbar-thumb-only overflow-x-hidden bg-blue-100 outline-none"
+          className="flex-1 min-h-0 order-2 border-blue-600 rounded-xl overflow-auto scrollbar-thumb-only overflow-x-hidden bg-blue-100 outline-none"
         >
           {filteredAndSortedUsers.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 p-4 xl:gap-6 xl:p-6">
@@ -658,15 +740,18 @@ export default function UserList() {
               ))}
             </div>
           ) : (
-            <div className="flex items-center justify-center min-h-full p-8">
+            <div className="flex justify-center min-h-full p-8">
               <div className="text-center max-w-md">
                 <h3 className="text-lg font-medium text-gray-900 mb-2">
-                  No users found
-                </h3>
-                <p className="text-gray-600">
                   {searchTerm
-                    ? `No users match "${searchTerm}". Try a different search term.`
+                    ? `No users match "${searchTerm}".`
                     : "No users available at the moment."}
+                </h3>
+
+                <p>
+                  {caseSensitive
+                    ? `The search is case sensitive.`
+                    : "The search is not case sensitive."}
                 </p>
                 {searchTerm && (
                   <button
