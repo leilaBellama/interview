@@ -10,44 +10,45 @@ export default function UserModal({ user, isOpen, onClose }) {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-lg max-w-xl w-full max-h-[90vh] overflow-y-auto">
+      <div className="bg-white rounded-lg max-w-[90vw] lg:max-w-[60vw] max-h-[90vh] overflow-y-auto">
         <div className="p-6 space-y-6">
-          {/* Header: Avatar + Name + Username + Close Button */}
-          <div className="flex flex-wrap items-start gap-4">
-            {/* Avatar */}
-            <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
-              <span className="text-white font-semibold text-3xl">
-                {user.name
-                  .split(" ")
-                  .map((word) => word[0])
-                  .slice(0, 2)
-                  .join("")
-                  .toUpperCase()}
-              </span>
-            </div>
-
-            {/* Name and Username */}
-            <div className="flex-1 min-w-0">
-              <h3 className="text-2xl font-semibold text-gray-900 break-words">
-                {user.name}
-              </h3>
-              <p className="text-gray-600 break-words">@{user.username}</p>
-            </div>
-
-            {/* Close Button */}
-            <div className="flex-shrink-0 self-start">
-              <button
-                onClick={onClose}
-                className="text-gray-400 hover:text-gray-600 text-3xl leading-none"
-              >
-                ×
-              </button>
-            </div>
+          {/* Close Button */}
+          <div className="flex flex-shrink-0 justify-end">
+            <button
+              onClick={onClose}
+              className="text-gray-400 hover:text-gray-600 text-3xl leading-3"
+            >
+              ×
+            </button>
           </div>
 
-          {/* Contact Information */}
-          <div className="space-y-4">
-            <div className="space-y-2 text-sm">
+          {/* Header: Name + Username + Contact info */}
+          <div className="flex flex-wrap items-start gap-6">
+            <div className="space-y-2 text-sm overflow-hidden">
+              <div className="flex items-center gap-2 min-w-0 text-sm overflow-hidden">
+                {/* Avatar */}
+                <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
+                  <span className="text-white font-semibold text-3xl">
+                    {user.name
+                      .split(" ")
+                      .map((word) => word[0])
+                      .slice(0, 2)
+                      .join("")
+                      .toUpperCase()}
+                  </span>
+                </div>
+                {/* Name and Username */}
+                <div className="flex-col min-w-0">
+                  <h3 className="text-3xl font-semibold min-w-0  break-words whitespace-normal">
+                    {user.name}
+                  </h3>
+                  <p className="text-gray-600 break-words">@{user.username}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Contact Information */}
+            <div className="space-y-2 text-sm overflow-hidden">
               <div className="flex items-start gap-2 min-w-0">
                 <MailIcon className="w-6 h-6 bg-blue-400 p-[.18rem] rounded-full text-white flex-shrink-0" />
                 <div className="min-w-0 break-words whitespace-normal">
@@ -74,20 +75,20 @@ export default function UserModal({ user, isOpen, onClose }) {
                 </a>
               </div>
             </div>
+          </div>
 
-            {/* Company Information */}
-            <div>
-              <h4 className="font-semibold mb-2">Company Information</h4>
-              <div className="text-sm">
-                <p className="font-bold text-base mb-2">{user.company?.name}</p>
-                <p>
-                  <span className="font-medium">Business:</span>{" "}
-                  {user.company?.bs}
-                </p>
-                <p className="text-gray-600 italic">
-                  "{user.company?.catchPhrase}"
-                </p>
-              </div>
+          {/* Company Information */}
+          <div>
+            <h4 className="font-semibold mb-2">Company Information</h4>
+            <div className="text-sm">
+              <p className="font-bold text-base mb-2">{user.company?.name}</p>
+              <p>
+                <span className="font-medium">Business:</span>{" "}
+                {user.company?.bs}
+              </p>
+              <p className="text-gray-600 italic">
+                "{user.company?.catchPhrase}"
+              </p>
             </div>
           </div>
         </div>

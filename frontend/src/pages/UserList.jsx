@@ -447,6 +447,7 @@ const mockUsers = [
     id: 101,
     name: "Areallylongfirstnameeeeeeeeeeeeeeeeee1 Areallylonglasttnameeeeeeeeeeeeeeee1",
     username: "Areallylongusernameeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee1",
+    // email: "Areallylongemaill@.biz1",
     email: "Areallylongemailllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll@.biz1",
     address: {
       street: "Kattie Turnpike",
@@ -648,10 +649,10 @@ export default function UserList() {
         <div
           ref={scrollContainerRef}
           onScroll={handleScroll}
-          className="flex-1 min-h-0 border rounded-lg overflow-auto overflow-x-hidden bg-blue-200"
+          className="flex-1 min-h-0 border-2 rounded-xl --14 overflow-auto overflow-x-hidden bg-blue-200"
         >
           {filteredAndSortedUsers.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 p-8 overflow-y-au">
               {filteredAndSortedUsers.map((user) => (
                 <UserCard key={user.id} user={user} onClick={handleUserClick} />
               ))}
