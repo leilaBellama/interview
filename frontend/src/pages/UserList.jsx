@@ -517,14 +517,13 @@ export default function UserList() {
         }
 
         const data = await response.json();
-        setUsers(mockUsers);
-        // setUsers(data);
+        // setUsers(mockUsers);
+        setUsers(data);
         setError(null);
       } catch (err) {
         if (process.env.NODE_ENV !== "test") {
           console.error("Error fetching users:", err);
         }
-        // console.error("Error fetching users:", err);
         setError(err.message);
       } finally {
         setLoading(false);
@@ -554,10 +553,8 @@ export default function UserList() {
         .join(" ");
     } else if (searchBy === "city") {
       textToSearch = user.address?.city || "";
-      console.log("city →", textToSearch);
     } else {
       textToSearch = user[searchBy] || "";
-      console.log(`${searchBy} →`, textToSearch);
     }
 
     // Normalize for case sensitivity
@@ -628,7 +625,6 @@ export default function UserList() {
     scrollTimeoutRef.current = setTimeout(() => {
       if (scrollContainerRef.current) {
         const scrollTop = scrollContainerRef.current.scrollTop;
-        // console.log("Scroll position:", scrollTop); // Debug log
         // Show button when scrolled more than 100px
         setShowBackToTop(scrollTop > 100);
       }
@@ -749,7 +745,7 @@ export default function UserList() {
                 </h3>
 
                 <p>
-                  {caseSensitive
+                  {(caseSensitive)
                     ? `The search is case sensitive.`
                     : "The search is not case sensitive."}
                 </p>
